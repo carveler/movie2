@@ -134,7 +134,7 @@ class MovieApp:
         matched_movies = [movie for movie in movies_list if
                           search_word in movie["title"].lower()]
         if matched_movies:
-            self.print_movies(matched_movies)
+            self._print_movies(matched_movies)
         else:
             print("Nothing found")
 
@@ -149,7 +149,7 @@ class MovieApp:
             return
         sorted_movies = sorted(movies_list, key=lambda x: x["rating"],
                                reverse=True)
-        self.print_movies(sorted_movies)
+        self._print_movies(sorted_movies)
 
     @staticmethod
     def _sort_order():
@@ -172,7 +172,7 @@ class MovieApp:
         year,
         either in descending or ascending order based on user preference.
         """
-        answer = self.sort_order()
+        answer = self._sort_order()
         movies_list = self._storage.load_movies()
         if not movies_list:
             print("No movies found.")
@@ -180,10 +180,10 @@ class MovieApp:
         if answer == "y":
             sorted_movies = sorted(movies_list, key=lambda x: x["year"],
                                    reverse=True)
-            self.print_movies(sorted_movies)
+            self._print_movies(sorted_movies)
         elif answer == "n":
             sorted_movies = sorted(movies_list, key=lambda x: x["year"])
-            self.print_movies(sorted_movies)
+            self._print_movies(sorted_movies)
 
     def _filter_movies(self):
         """
@@ -204,7 +204,7 @@ class MovieApp:
                 "year") and end_year >= int(movie["year"]) >= start_year,
             movies_list, ))
         if filtered_movies:
-            self.print_movies(filtered_movies)
+            self._print_movies(filtered_movies)
         else:
             print("Nothing found")
 
@@ -221,11 +221,11 @@ class MovieApp:
                    "3": self._storage.delete_movie,
                    "4": self._storage.update_movie,
                    "5": self._command_movie_stats,
-                   "6": self.print_random_movie, 
-                   "7": self.search_movie,
-                   "8": self.sort_by_rating, 
-                   "9": self.sort_by_year,
-                   "10": self.filter_movies, 
+                   "6": self._print_random_movie,
+                   "7": self._search_movie,
+                   "8": self._sort_by_rating,
+                   "9": self._sort_by_year,
+                   "10": self._filter_movies,
                    "11": self._generate_website, }
 
         action = actions.get(user_input)
