@@ -1,11 +1,11 @@
-import os
-from dotenv import load_dotenv
-from istorage import IStorage
-import csv
+import json
 import requests
+from .istorage import IStorage
+from dotenv import load_dotenv
+import os
 
 
-class StorageCsv(IStorage):
+class StorageJson(IStorage):
     """
     A class for managing movie data stored in a JSON file.
 
@@ -20,6 +20,7 @@ class StorageCsv(IStorage):
         - delete_movie(): Deletes a movie from the database.
         - update_movie(): Updates the rating of an existing movie.
     """
+
     def __init__(self, file_path):
         """
         Initializes the StorageJson instance with the provided file path.
@@ -38,9 +39,9 @@ class StorageCsv(IStorage):
             list: List of movie dictionaries.
         """
         try:
-            with open(self.file_path, newline="") as csvfile:
-                reader = csv.DictReader(csvfile)
-                return list(reader) 
+            with (open(self.file_path, "r", encoding="utf-8") as
+                  movie_obj):
+                return json.load(movie_obj)
         except FileNotFoundError:
             print("Error: The storage file was not found.")
 
@@ -52,12 +53,8 @@ class StorageCsv(IStorage):
             movies (list): List of movie dictionaries.
         """
         try:
-            with open(self.file_path, 'w', newline='') as csvfile:
-                fieldnames = ['title', 'year', 'rating', 'poster']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                writer.writeheader()
-                for movie in movies:
-                    writer.writerow(movie)
+            with open(self.file_path, "w") as movie_obj:
+                json.dump(movies, movie_obj, indent=4)
         except FileNotFoundError:
             print("Error: File was not found.")
 
@@ -89,15 +86,16 @@ class StorageCsv(IStorage):
         for movie in movies_list:
             print(f"{movie["title"]}, ({movie['year']}): {movie['rating']}")
         return movies_list
-  
-    def add_movie(self):  # title, year, rating poster
+
+    def add_movie(self):  # title, year, rating, poster
         """
         Adds a movie to the movies' database.
 
-        Retrieves additional movie information (year, rating, and poster)
-        from the OMDB API.
+        Retrieves additional movie information (year, rating, and poster) from
+        the OMDB API.
         Appends the movie data to the list and saves it.
         """
+
         while True:
             title = input("Enter new movie name: ").strip()
             if title:
@@ -105,29 +103,30 @@ class StorageCsv(IStorage):
             print("Error: Movie name cannot be empty.")
 
         movies_list = self.load_movies()
-        
+
         if not movies_list:
             print("No movies found")
             return
-        
+
         for movie in movies_list:
             if movie["title"].lower() == title.lower():
                 print(f"Movie '{title}' already exists!")
                 return
+
         try:
             load_dotenv()
             api_key = os.getenv("API_KEY")
             url = f"http://www.omdbapi.com/?apikey={api_key}&t={title}"
             response = requests.get(url, timeout=5)
             data = response.json()
-            print(f"Api response: {data}")
+            print(f"API response: {data}")
         except ConnectionError as connection_error:
             print(connection_error)
             return
-        
-        movies_list.append({"title": data['Title'], "year": data['Year'],
-                            "rating": data['imdbRating'], "poster":
-                                data['Poster']})
+
+        movies_list.append({"title": data["Title"], "year": data["Year"],
+                            "rating": data["imdbRating"],
+                            "poster": data["Poster"], })
         self.save_movies(movies_list)
         print(f"Movie '{title}' successfully added")
 
@@ -144,17 +143,17 @@ class StorageCsv(IStorage):
             print("Error: Movie name cannot be empty.")
 
         movies_list = self.load_movies()
-        
+
         if not movies_list:
             print("No movies found")
             return
-        
+
         for movie in movies_list:
             if movie["title"].lower() == title.lower():
                 movies_list.remove(movie)
                 self.save_movies(movies_list)
                 print(f"Movie {title} successfully deleted")
-                return 
+                return
         print(f"Movie {title} doesn't exist!")
 
     def update_movie(self):  # title, rating
@@ -171,11 +170,11 @@ class StorageCsv(IStorage):
             print("Error: Movie name cannot be empty.")
 
         movies_list = self.load_movies()
-        
+
         if not movies_list:
             print("No movies found")
             return
-        
+
         for movie in movies_list:
             if movie["title"].lower() == title.lower():
                 while True:
