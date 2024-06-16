@@ -39,8 +39,7 @@ class StorageJson(IStorage):
             list: List of movie dictionaries.
         """
         try:
-            with (open(self.file_path, "r", encoding="utf-8") as
-                  movie_obj):
+            with open(self.file_path, "r", encoding="utf-8") as movie_obj:
                 return json.load(movie_obj)
         except FileNotFoundError:
             print("Error: The storage file was not found.")
@@ -53,7 +52,7 @@ class StorageJson(IStorage):
             movies (list): List of movie dictionaries.
         """
         try:
-            with open(self.file_path, "w") as movie_obj:
+            with open(self.file_path, "w",encoding="utf-8") as movie_obj:
                 json.dump(movies, movie_obj, indent=4)
         except FileNotFoundError:
             print("Error: File was not found.")

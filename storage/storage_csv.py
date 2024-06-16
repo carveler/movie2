@@ -38,11 +38,12 @@ class StorageCsv(IStorage):
             list: List of movie dictionaries.
         """
         try:
-            with open(self.file_path, newline="") as csvfile:
+            with open(self.file_path, "r", encoding="utf-8", newline="") as csvfile:
                 reader = csv.DictReader(csvfile)
+                print(reader)
                 return list(reader) 
         except FileNotFoundError:
-            print("Error: The storage file was not found.")
+            print(f"Error: The storage file was not found.: {self.file_path}")
 
     def save_movies(self, movies):
         """
@@ -52,14 +53,14 @@ class StorageCsv(IStorage):
             movies (list): List of movie dictionaries.
         """
         try:
-            with open(self.file_path, 'w', newline='') as csvfile:
+            with open(self.file_path, 'w', encoding="utf-8", newline='') as csvfile:
                 fieldnames = ['title', 'year', 'rating', 'poster']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
                 for movie in movies:
                     writer.writerow(movie)
         except FileNotFoundError:
-            print("Error: File was not found.")
+            print(f"Error: File was not found.: {self.file_path}")
 
     def list_movies(self):
         """

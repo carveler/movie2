@@ -1,9 +1,15 @@
 import random
 import statistics
+import os
 
 APP_TITLE = "Movie App"
-TEMPLATE_HTML = "index_template.html"
-OUTPUT_HTML = "index.html"
+
+# Get the absolute path to the directory where movie_app.py is located
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Define the paths relative to the base_dir
+TEMPLATE_HTML = os.path.join(base_dir, 'templates', 'index_template.html')
+OUTPUT_HTML = os.path.join(base_dir, 'templates', 'index.html')
 
 
 class MovieApp:

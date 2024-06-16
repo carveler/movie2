@@ -9,7 +9,7 @@ To set up Movie App on your local machine, follow these steps:
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/yourusername/movie2.git
+    git clone https://github.com/carveler/movie2.git
     ```
 
 2. Navigate to the project directory:
@@ -59,7 +59,7 @@ To use Movie App, follow these steps:
 
 1. Run the main script:
     ```bash
-    python3 main.py
+    python3 main.py file_name
     ```
 
 2. Follow the on-screen menu options to interact with the application. You can list movies, add new movies, delete existing movies, update movie ratings, display movie statistics, generate a website with movie information, and more.
