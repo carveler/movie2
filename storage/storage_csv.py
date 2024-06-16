@@ -40,7 +40,6 @@ class StorageCsv(IStorage):
         try:
             with open(self.file_path, "r", encoding="utf-8", newline="") as csvfile:
                 reader = csv.DictReader(csvfile)
-                print(reader)
                 return list(reader) 
         except FileNotFoundError:
             print(f"Error: The storage file was not found.: {self.file_path}")
@@ -100,7 +99,7 @@ class StorageCsv(IStorage):
         Appends the movie data to the list and saves it.
         """
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter new movie name to add: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")
@@ -139,7 +138,7 @@ class StorageCsv(IStorage):
         Removes the specified movie (if found) and saves the updated list.
         """
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter movie name to delete: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")
@@ -166,7 +165,7 @@ class StorageCsv(IStorage):
         updated list.
         """
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter movie name to update: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")

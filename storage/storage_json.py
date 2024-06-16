@@ -96,7 +96,7 @@ class StorageJson(IStorage):
         """
 
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter new movie name to add: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")
@@ -136,7 +136,7 @@ class StorageJson(IStorage):
         Removes the specified movie (if found) and saves the updated list.
         """
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter movie name to delete: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")
@@ -163,7 +163,7 @@ class StorageJson(IStorage):
         updated list.
         """
         while True:
-            title = input("Enter new movie name: ").strip()
+            title = input("Enter movie name to update: ").strip()
             if title:
                 break
             print("Error: Movie name cannot be empty.")
@@ -181,7 +181,7 @@ class StorageJson(IStorage):
                     if rating.isdigit():
                         break
                     print("Error: Rating must be a integer.")
-                movie["rating"] = float(rating)
+                movie["rating"] = str(float(rating))
                 self.save_movies(movies_list)
                 print(f"Movie {title} successfully updated")
                 return
