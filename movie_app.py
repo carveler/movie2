@@ -77,8 +77,8 @@ class MovieApp:
         for movie_data in movies_list:
             content += '<li>'
             movie_grid = (f'<div class="movie">'
-                          f'<img class="movie-poster" src='
-                          f'{movie_data['poster']} title="" />'
+                          f'<img class="movie-poster" '
+                          f'src={movie_data['poster']} title="" />'
                           f'<div class="movie-title">'
                           f'{movie_data['title']}</div>'
                           f'<div class="movie-year">{movie_data['year']}</div>'
