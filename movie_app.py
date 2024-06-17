@@ -1,6 +1,8 @@
 import random
 import statistics
 import os
+from dotenv import load_dotenv
+import requests
 
 APP_TITLE = "Movie App"
 
@@ -34,6 +36,86 @@ class MovieApp:
             return movies
         except FileNotFoundError:
             print("Error: The storage file was not found.")
+
+    def _command_add_movie(self):
+        while True:
+            title = input("Enter new movie name to add: ").strip()
+            if title:
+                break
+            print("Error: Movie name cannot be empty.")
+
+        movies_list = self._command_list_movies()
+
+        if movies_list is None or not movies_list:
+            print(f"Movies data does not exist or empty!")
+            return
+
+        for movie in movies_list:
+            if movie["title"].lower() == title.lower():
+                print(f"Movie '{title}' already exists!")
+                return
+        try:
+            load_dotenv()
+            api_key = os.getenv("API_KEY")
+            url = f"http://www.omdbapi.com/?apikey={api_key}&t={title}"
+            response = requests.get(url, timeout=5)
+            data = response.json()
+            print(f"Api response: {data}")
+        except ConnectionError as connection_error:
+            print(connection_error)
+            return
+        except Exception as e:  
+            print(f"An error occurred during API call: {e}")
+            return
+
+        self._storage.add_movie(title=data['Title'], year=data['Year'],
+                                rating=data['imdbRating'],
+                                poster=data['Poster'])
+    
+    def _command_delete_movie(self):
+        while True:
+            title = input("Enter movie name to delete: ").strip()
+            if title:
+                break
+            print("Error: Movie name cannot be empty.")
+
+        movies_list = self._storage.load_movies()
+
+        if movies_list is None or not movies_list:
+            print(f"Movies data does not exist or empty!")
+            return
+
+        for movie in movies_list:
+            if movie["title"].lower() == title.lower():
+                self._storage.delete_movie(title)
+                return
+
+        print(f"Movie {title} doesn't exist!")
+
+    def _command_update_movie(self):
+        while True:
+            title = input("Enter movie name to update: ").strip()
+            if title:
+                break
+            print("Error: Movie name cannot be empty.")
+
+        movies_list = self._command_list_movies()
+
+        if movies_list is None or not movies_list:
+            print(f"Movies data does not exist or empty!")
+            return
+
+        for movie in movies_list:
+            if movie["title"].lower() == title.lower():
+                while True:
+                    rating = input("Enter new movie rating: ")
+                    if rating.isdigit():
+                        break
+                    print("Error: Rating must be a integer.")
+                self._storage.update_movie(title, rating)
+                return
+
+        print(f"Movie {title} doesn't exist!")
 
     def _command_movie_stats(self):
         """
@@ -71,17 +153,17 @@ class MovieApp:
         """
         content = ""
         movies_list = self._storage.load_movies()
-        if not movies_list:
-            print("No movies found.")
+        if movies_list is None or not movies_list:
+            print(f"Movies data does not exist or empty!")
             return
         for movie_data in movies_list:
             content += '<li>'
             movie_grid = (f'<div class="movie">'
                           f'<img class="movie-poster" '
-                          f'src={movie_data['poster']} title="" />'
+                          f'src={movie_data.get('poster', '')} title="" />'
                           f'<div class="movie-title">'
-                          f'{movie_data['title']}</div>'
-                          f'<div class="movie-year">{movie_data['year']}</div>'
+                          f'{movie_data.get('title', '')}</div>'
+                          f'<div class="movie-year">{movie_data.get('year','')}</div>'
                           '</div>')
             content += movie_grid
             content += '</li>'
@@ -223,15 +305,15 @@ class MovieApp:
         """
         actions = {"0": exit, 
                    "1": self._storage.list_movies,
-                   "2": self._storage.add_movie,
-                   "3": self._storage.delete_movie,
-                   "4": self._storage.update_movie,
+                   "2": self._command_add_movie,
+                   "3": self._command_delete_movie,
+                   "4": self._command_update_movie,
                    "5": self._command_movie_stats,
-                   "6": self._print_random_movie,
+                   "6": self._print_random_movie, 
                    "7": self._search_movie,
-                   "8": self._sort_by_rating,
+                   "8": self._sort_by_rating, 
                    "9": self._sort_by_year,
-                   "10": self._filter_movies,
+                   "10": self._filter_movies, 
                    "11": self._generate_website, }
 
         action = actions.get(user_input)
