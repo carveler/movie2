@@ -32,10 +32,17 @@ class MovieApp:
             list: A list of movie dictionaries.
         """
         try:
-            movies = self._storage.load_movies()
-            return movies
+            movies_list = self._storage.load_movies()
+            if movies_list is None or not movies_list:
+                print(f"Movies data does not exist or empty!")
+           
+            print()
+            print(f"{len(movies_list)} movies in total")
+            self._print_movies(movies_list)
+      
         except FileNotFoundError:
             print("Error: The storage file was not found.")
+
 
     def _command_add_movie(self):
         while True:
@@ -44,8 +51,7 @@ class MovieApp:
                 break
             print("Error: Movie name cannot be empty.")
 
-        movies_list = self._command_list_movies()
-
+        movies_list = self._storage.load_movies()
         if movies_list is None or not movies_list:
             print(f"Movies data does not exist or empty!")
             return
@@ -99,7 +105,7 @@ class MovieApp:
                 break
             print("Error: Movie name cannot be empty.")
 
-        movies_list = self._command_list_movies()
+        movies_list = self._storage.load_movies()
 
         if movies_list is None or not movies_list:
             print(f"Movies data does not exist or empty!")
@@ -123,7 +129,7 @@ class MovieApp:
         average rating, median rating,
         best and worst-rated movies.
         """
-        movies_list = self._command_list_movies()
+        movies_list = self._storage.load_movies()
         if not movies_list:
             print("No movies found.")
             return
@@ -304,7 +310,7 @@ class MovieApp:
             user_input (str): The user's menu choice.
         """
         actions = {"0": exit, 
-                   "1": self._storage.list_movies,
+                   "1": self._command_list_movies,
                    "2": self._command_add_movie,
                    "3": self._command_delete_movie,
                    "4": self._command_update_movie,

@@ -26,7 +26,8 @@ class StorageJson(IStorage):
         Args:
             file_path (str): Path to the JSON file.
         """
-        self.file_path = file_path
+        super().__init__(file_path)
+
 
     def load_movies(self):
         """
@@ -59,21 +60,7 @@ class StorageJson(IStorage):
             print("Error: File was not found.")
             return
 
-    def list_movies(self):
-        """
-        print list of movies         
-        Returns:
-            list: List of movie dictionaries or None if the file is not found.
-        """
-        movies_list = self.load_movies()
-        if movies_list is None or not movies_list:
-            print(f"Movies data does not exist or empty!")
-            return None
-        print()
-        print(f"{len(movies_list)} movies in total")
-        for movie in movies_list:
-            print(f"{movie["title"]}, ({movie['year']}): {movie['rating']}")
-        return movies_list
+    
 
     def add_movie(self, title="", year="", rating="", poster=""):
         """
@@ -85,24 +72,7 @@ class StorageJson(IStorage):
             rating (float): Rating of the movie.
             poster (str): URL of the movie poster.
         """
-        movies_list = self.load_movies()
-
-        if movies_list is None or not movies_list:
-            print(f"Movies data does not exist or empty!")
-            return
-
-        for movie in movies_list:
-            if movie["title"].lower() == title.lower():
-                print(f"Movie '{title}' already exists!")
-                return
-
-        try:
-            movies_list.append({"title": title, "year": year, "rating": rating,
-                                "poster": poster, })
-            self.save_movies(movies_list)
-            print(f"Movie '{title}' successfully added")
-        except Exception as e:
-            print(f"An error occurred while adding the movie: {e}")
+        super().add_movie(title, year, rating, poster)
 
     def delete_movie(self, title):
         """
@@ -111,24 +81,7 @@ class StorageJson(IStorage):
         Args:
             title (str): Title of the movie to delete.
         """
-        movies_list = self.load_movies()
-
-        if movies_list is None or not movies_list:
-            print(f"Movies data does not exist or empty!")
-            return
-
-        for movie in movies_list:
-            if movie["title"].lower() == title.lower():
-                try:
-                    movies_list.remove(movie)
-                    self.save_movies(movies_list)
-                    print(f"Movie {title} successfully deleted")
-                except Exception as e:
-                    print(f"Error: Movie deleted but failed to save changes! ("
-                          f"{e})")
-                return
-
-        print(f"Movie {title} doesn't exist!")
+        super().delete_movie(title)
 
     def update_movie(self, title, rating):
         """
@@ -142,19 +95,4 @@ class StorageJson(IStorage):
             rating (float): The new rating for the movie.
         """
 
-        movies_list = self.load_movies()
-
-        if movies_list is None or not movies_list:
-            print(f"Movies data does not exist or empty!")
-            return
-
-        for movie in movies_list:
-            if movie["title"].lower() == title.lower():
-                movie["rating"] = str(float(rating))
-                try:
-                    self.save_movies(movies_list)
-                    print(f"Movie {title} successfully updated")
-                    return
-                except Exception as e:
-                    print(e)
-        print(f"Movie {title} doesn't exist!")
+        super().update_movie(title, rating)
