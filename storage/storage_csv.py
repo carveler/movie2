@@ -91,3 +91,4 @@ class StorageCsv(IStorage):
             rating (float): The new rating for the movie.
         """
         super().update_movie(title, rating)
+

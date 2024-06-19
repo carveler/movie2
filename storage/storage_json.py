@@ -28,7 +28,6 @@ class StorageJson(IStorage):
         """
         super().__init__(file_path)
 
-
     def load_movies(self):
         """
         Loads movie data from the JSON file and returns it as a list of
@@ -59,8 +58,6 @@ class StorageJson(IStorage):
         except FileNotFoundError:
             print("Error: File was not found.")
             return
-
-    
 
     def add_movie(self, title="", year="", rating="", poster=""):
         """

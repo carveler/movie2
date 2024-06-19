@@ -35,14 +35,13 @@ class MovieApp:
             movies_list = self._storage.load_movies()
             if movies_list is None or not movies_list:
                 print(f"Movies data does not exist or empty!")
-           
+
             print()
             print(f"{len(movies_list)} movies in total")
             self._print_movies(movies_list)
-      
+
         except FileNotFoundError:
             print("Error: The storage file was not found.")
-
 
     def _command_add_movie(self):
         while True:
@@ -70,14 +69,14 @@ class MovieApp:
         except ConnectionError as connection_error:
             print(connection_error)
             return
-        except Exception as e:  
+        except Exception as e:
             print(f"An error occurred during API call: {e}")
             return
 
         self._storage.add_movie(title=data['Title'], year=data['Year'],
                                 rating=data['imdbRating'],
                                 poster=data['Poster'])
-    
+
     def _command_delete_movie(self):
         while True:
             title = input("Enter movie name to delete: ").strip()
@@ -169,7 +168,8 @@ class MovieApp:
                           f'src={movie_data.get('poster', '')} title="" />'
                           f'<div class="movie-title">'
                           f'{movie_data.get('title', '')}</div>'
-                          f'<div class="movie-year">{movie_data.get('year','')}</div>'
+                          f'<div class="movie-year">'
+                          f'{movie_data.get('year', '')}</div>'
                           '</div>')
             content += movie_grid
             content += '</li>'
@@ -309,18 +309,14 @@ class MovieApp:
         Args:
             user_input (str): The user's menu choice.
         """
-        actions = {"0": exit, 
-                   "1": self._command_list_movies,
+        actions = {"0": exit, "1": self._command_list_movies,
                    "2": self._command_add_movie,
                    "3": self._command_delete_movie,
                    "4": self._command_update_movie,
                    "5": self._command_movie_stats,
-                   "6": self._print_random_movie, 
-                   "7": self._search_movie,
-                   "8": self._sort_by_rating, 
-                   "9": self._sort_by_year,
-                   "10": self._filter_movies, 
-                   "11": self._generate_website, }
+                   "6": self._print_random_movie, "7": self._search_movie,
+                   "8": self._sort_by_rating, "9": self._sort_by_year,
+                   "10": self._filter_movies, "11": self._generate_website, }
 
         action = actions.get(user_input)
         if action:
